@@ -1,9 +1,9 @@
-package org.brijframework.core;
+package org.brijframework.core.objects;
 
 import static org.brijframework.util.builder.BuilderUtil.getCurrentInstance;
 
 import org.brijframework.BaseObject;
-import org.brijframework.meta.blueprint.ClassInfo;
+import org.brijframework.meta.reflect.ClassMetaInfo;
 import org.brijframework.util.asserts.AssertMessage;
 import org.brijframework.util.asserts.Assertion;
 import org.brijframework.util.builder.BuilderUtil;
@@ -12,7 +12,7 @@ import org.brijframework.util.meta.PointUtil;
 public interface DefaultBaseObject extends BaseObject {
 
 	@Override
-	default <T> T setProperty(String _keyPath, T _value) {
+	public default <T> T setProperty(String _keyPath, T _value) {
 		Assertion.notEmpty(_keyPath, "Key should not be null or empty");
 		Object keyInstance = getCurrentInstance(getInstance(), _keyPath);
 		Assertion.notNull(keyInstance, AssertMessage.root_object_null_message + " " + _keyPath);
@@ -20,7 +20,7 @@ public interface DefaultBaseObject extends BaseObject {
 	}
 
 	@Override
-	default <T> T getProperty(String _keyPath) {
+	public default <T> T getProperty(String _keyPath) {
 		Assertion.notEmpty(_keyPath, "Key should not be null or empty");
 		Object keyInstance = getCurrentInstance(getInstance(), _keyPath);
 		Assertion.notNull(keyInstance, AssertMessage.root_object_null_message + " " + _keyPath);
@@ -28,7 +28,7 @@ public interface DefaultBaseObject extends BaseObject {
 	}
 
 	@Override
-	default Boolean containsProperty(String _keyPath) {
+	public default Boolean containsKey(String _keyPath) {
 		Assertion.notNull(_keyPath, AssertMessage.arg_null_message);
 		String _key = PointUtil.keyPoint(_keyPath);
 		Class<?> current = BuilderUtil.getCurrentClass(getInstance().getClass(), _keyPath);
@@ -36,30 +36,30 @@ public interface DefaultBaseObject extends BaseObject {
 	}
 
 	@Override
-	default Boolean containsValue(String _keyPath) {
+	public default Boolean containsValue(String _keyPath) {
 		Assertion.notNull(_keyPath, AssertMessage.properties_null_message);
-		if (!this.containsProperty(_keyPath)) {
+		if (!this.containsKey(_keyPath)) {
 			return false;
 		}
 		return getProperty(_keyPath) != null;
 	}
 
 	@Override
-	default Class<?> typeOfProperty(String _keyPath) {
+	public default Class<?> typeOfProperty(String _keyPath) {
 		Assertion.notNull(_keyPath, AssertMessage.arg_null_message);
 		String _key = PointUtil.keyPoint(_keyPath);
 		Class<?> current = BuilderUtil.getCurrentClass(getInstance().getClass(), _keyPath);
 		return BuilderUtil.getProperty(current, _key);
 	}
 
-	default Object getInstance() {
+	public default Object getInstance() {
 		return this;
 	}
 
-	abstract ClassInfo getClassInfo(Object keyInstance) ;
+	public abstract ClassMetaInfo getClassInfo(Object keyInstance) ;
 	
-	abstract <T> T setProperty(Object keyInstance, String keyPoint, T _value);
+	public abstract <T> T setProperty(Object keyInstance, String keyPoint, T _value);
 
-	abstract <T> T getProperty(Object keyInstance, String keyPoint);
+	public abstract <T> T getProperty(Object keyInstance, String keyPoint);
 
 }
