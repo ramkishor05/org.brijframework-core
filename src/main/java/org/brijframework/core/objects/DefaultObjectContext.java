@@ -1,20 +1,20 @@
 package org.brijframework.core.objects;
 
-import org.brijframework.BaseObject;
+import org.brijframework.ObjectContext;
 import org.brijframework.meta.reflect.ClassMetaInfo;
 import org.brijframework.util.asserts.AssertMessage;
 import org.brijframework.util.asserts.Assertion;
 import org.brijframework.util.meta.PointUtil;
 
-public interface DefaultBaseObject extends BaseObject {
+public interface DefaultObjectContext extends ObjectContext {
 
 	@Override
 	public default <T> T setProperty(String _keyPath, T _value) {
 		Assertion.notEmpty(_keyPath, "Key should not be null or empty");
 		Object keyInstance = this.getCurrentInstance(getInstance(), _keyPath);
 		Assertion.notNull(keyInstance, AssertMessage.root_object_null_message + " " + _keyPath);
-		if(!this.equals(keyInstance) && BaseObject.class.isAssignableFrom(keyInstance.getClass())) {
-			BaseObject baseObject=(BaseObject) keyInstance;
+		if(!this.equals(keyInstance) && ObjectContext.class.isAssignableFrom(keyInstance.getClass())) {
+			ObjectContext baseObject=(ObjectContext) keyInstance;
 			return baseObject.setProperty(_keyPath, _value);
 		}else {
 			return setProperty(keyInstance, PointUtil.keyPoint(_keyPath), _value);
@@ -26,8 +26,8 @@ public interface DefaultBaseObject extends BaseObject {
 		Assertion.notEmpty(_keyPath, "Key should not be null or empty");
 		Object keyInstance = this.getCurrentInstance(getInstance(),_keyPath);
 		Assertion.notNull(keyInstance, AssertMessage.root_object_null_message + " " + _keyPath);
-		if(BaseObject.class.isAssignableFrom(keyInstance.getClass()) &&!this.equals(keyInstance)) {
-			BaseObject baseObject=(BaseObject) keyInstance;
+		if(ObjectContext.class.isAssignableFrom(keyInstance.getClass()) &&!this.equals(keyInstance)) {
+			ObjectContext baseObject=(ObjectContext) keyInstance;
 			return baseObject.getProperty(_keyPath);
 		}else {
 		   return getProperty(keyInstance, PointUtil.keyPoint(_keyPath));
